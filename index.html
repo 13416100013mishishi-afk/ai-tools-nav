@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI工具导航站</title>
+  <style>
+    /* ===== Reset & Base ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a1a;
+      --card-bg: #12122a;
+      --card-hover: #1a1a3e;
+      --accent: #7c3aed;
+      --accent2: #a855f7;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: #2d2d5a;
+      --tag-writing: #3b82f6;
+      --tag-image: #ec4899;
+      --tag-code: #10b981;
+      --tag-efficiency: #f59e0b;
+      --tag-other: #6b7280;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ===== Header ===== */
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+    }
+    header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.8rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, #a855f7, #7c3aed, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* ===== Filter ===== */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 20px 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .filter-btn {
+      padding: 8px 20px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ===== Grid ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    /* ===== Card ===== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2);
+      border-color: var(--accent);
+      background: var(--card-hover);
+    }
+    .card:hover::before { opacity: 1; }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .card-arrow {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: rgba(124, 58, 237, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--accent2);
+      transition: background 0.2s;
+    }
+    .card:hover .card-arrow { background: var(--accent); color: #fff; }
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+    .tag {
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .tag-writing  { background: var(--tag-writing); }
+    .tag-image    { background: var(--tag-image); }
+    .tag-code     { background: var(--tag-code); }
+    .tag-efficiency { background: var(--tag-efficiency); }
+    .tag-other    { background: var(--tag-other); }
+
+    .card-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== Empty State ===== */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      grid-column: 1 / -1;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== Animations ===== */
+    .card {
+      animation: fadeInUp 0.4s ease both;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Mobile ===== */
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      header { padding: 40px 20px 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🤖 AI工具导航站</h1>
+  <p>收录当前最热门的20款AI工具，一站直达</p>
+</header>
+
+<div class="filter-bar" id="filterBar">
+  <button class="filter-btn active" data-filter="全部">全部</button>
+  <button class="filter-btn" data-filter="写作">✏️ 写作</button>
+  <button class="filter-btn" data-filter="图像">🎨 图像</button>
+  <button class="filter-btn" data-filter="编程">💻 编程</button>
+  <button class="filter-btn" data-filter="效率">⚡ 效率</button>
+</div>
+
+<div class="container">
+  <div class="grid" id="grid"></div>
+</div>
+
+<footer>
+  <p>📌 数据来源：全网热门AI工具综合评估 · 最后更新：2026年4月</p>
+</footer>
+
+<script>
+// ===== Data =====
+const tools = [
+  {"name":"ChatGPT","url":"https://chat.openai.com","description":"OpenAI开发的对话AI助手，能聊天、写文章、编程、答疑","category":"写作"},
+  {"name":"Midjourney","url":"https://www.midjourney.com","description":"输入文字描述生成精美图片的AI绘图工具","category":"图像"},
+  {"name":"GitHub Copilot","url":"https://github.com/features/copilot","description":"AI编程助手，在你写代码时实时提供代码补全和建议","category":"编程"},
+  {"name":"Notion AI","url":"https://www.notion.so/ai","description":"笔记工具内置的AI助手，帮你写文档、总结、头脑风暴","category":"效率"},
+  {"name":"Claude","url":"https://claude.ai","description":"Anthropic开发的AI助手，擅长对话、写作和分析","category":"写作"},
+  {"name":"Stable Diffusion","url":"https://stability.ai","description":"开源AI图像生成模型，可本地部署或在线使用","category":"图像"},
+  {"name":"Cursor","url":"https://cursor.sh","description":"基于AI的代码编辑器，支持智能补全和代码解释","category":"编程"},
+  {"name":"Canva AI","url":"https://www.canva.com","description":"设计平台集成AI，快速生成海报、PPT、社交图片","category":"图像"},
+  {"name":"Otter.ai","url":"https://otter.ai","description":"AI会议记录助手，自动转录语音并生成会议纪要","category":"效率"},
+  {"name":"Jasper","url":"https://www.jasper.ai","description":"AI文案写作工具，批量生成营销文案、博客、社交媒体内容","category":"写作"},
+  {"name":"DALL-E 3","url":"https://openai.com/dall-e-3","description":"OpenAI图像生成AI，理解复杂提示词生成精准图片","category":"图像"},
+  {"name":"Tabnine","url":"https://www.tabnine.com","description":"AI代码补全工具，支持多种编程语言和IDE","category":"编程"},
+  {"name":"Zoom AI Companion","url":"https://zoom.us/ai","description":"视频会议中的AI助手，提供会议总结和智能回复建议","category":"效率"},
+  {"name":"Copy.ai","url":"https://www.copy.ai","description":"AI文案生成器，帮助快速创建广告文案、产品描述","category":"写作"},
+  {"name":"Runway","url":"https://runwayml.com","description":"AI视频生成和编辑平台，支持文生视频、图生视频","category":"图像"},
+  {"name":"Replit","url":"https://replit.com","description":"在线编程平台集成AI，云端写代码、运行、部署","category":"编程"},
+  {"name":"Grammarly","url":"https://www.grammarly.com","description":"AI英语写作助手，语法检查、改写、语气调整","category":"写作"},
+  {"name":"Beautiful.ai","url":"https://www.beautiful.ai","description":"AI自动设计PPT，输入内容自动排版生成演示文稿","category":"效率"},
+  {"name":"Leonardo.ai","url":"https://leonardo.ai","description":"AI游戏资产生成平台，专注游戏风格的图像创作","category":"图像"},
+  {"name":"Codeium","url":"https://codeium.com","description":"免费AI代码补全插件，替代Copilot的高性价比选择","category":"编程"}
+];
+
+// ===== Render =====
+const grid = document.getElementById('grid');
+const tagMap = { '写作':'tag-writing','图像':'tag-image','编程':'tag-code','效率':'tag-efficiency','其他':'tag-other' };
+
+function getTagClass(cat) {
+  return tagMap[cat] || 'tag-other';
+}
+
+function render(filter) {
+  const filtered = filter === '全部' ? tools : tools.filter(t => t.category === filter);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="empty">该分类暂无工具收录</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map((t, i) => `
+    <a href="${t.url}" target="_blank" rel="noopener" class="card" style="animation-delay:${i*0.05}s">
+      <div class="card-header">
+        <span class="card-name">${t.name}</span>
+        <span class="card-arrow">↗</span>
+      </div>
+      <p class="card-desc">${t.description}</p>
+      <div class="card-footer">
+        <span class="tag ${getTagClass(t.category)}">${t.category}</span>
+      </div>
+    </a>
+  `).join('');
+}
+
+render('全部');
+
+// ===== Filter =====
+document.getElementById('filterBar').addEventListener('click', e => {
+  if (e.target.classList.contains('filter-btn')) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    render(e.target.dataset.filter);
+  }
+});
+</script>
+
+</body>
+</html>
