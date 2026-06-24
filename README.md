@@ -1,6 +1,6 @@
 # AI 工具导航站
 
-> 收录 20 款当前最热门的 AI 工具，一键跳转官网，支持分类筛选。
+> 收录 21 款当前最热门的 AI 工具，一键跳转官网，支持分类筛选。
 
 **在线访问：** https://13416100013mishishi-afk.github.io/ai-tools-nav
 
@@ -59,11 +59,11 @@
 在 `index.html` 找到这段代码：
 
 ```html
-<button class="filter-btn active" data-cat="all">全部 <span class="count">20</span></button>
+<button class="filter-btn active" data-cat="all">全部 <span class="count">21</span></button>
 <button class="filter-btn" data-cat="写作">写作 <span class="count">5</span></button>
 <button class="filter-btn" data-cat="图像">图像 <span class="count">5</span></button>
 <button class="filter-btn" data-cat="编程">编程 <span class="count">5</span></button>
-<button class="filter-btn" data-cat="效率">效率 <span class="count">3</span></button>
+<button class="filter-btn" data-cat="效率">效率 <span class="count">4</span></button>
 <button class="filter-btn" data-cat="其他">其他 <span class="count">2</span></button>
 ```
 
